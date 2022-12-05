@@ -1,13 +1,11 @@
 #lang racket
 
+(require "../utils.rkt")
+
 (module+ test
   (require rackunit))
 
 (define empty-string? (negate non-empty-string?))
-
-(define (index-list l)
-  (for/list ([(e idx) (in-indexed l)])
-    (cons e idx)))
 
 ;;; Read calories for a single elf. That is, read elements from the list until
 ;;; the first empty element. Then, convert the read elements to numbers and
