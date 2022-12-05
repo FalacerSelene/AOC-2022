@@ -1,5 +1,7 @@
 #lang racket
 
+(require "../utils.rkt")
+
 (module+ test
   (require rackunit))
 
@@ -18,15 +20,6 @@
     (check-equal? (char-priority #\t) 20)
     (check-equal? (char-priority #\s) 19)
     (check-equal? (char-priority #\space) #f)))
-
-(define (groups-of lst n)
-  (define (groups-of* lst n)
-    (if (empty? lst)
-      lst
-      (cons (take lst n) (groups-of* (drop lst n) n))))
-  (if (zero? (modulo (length lst) n))
-    (groups-of* lst n)
-    #f))
 
 ;;; Read a single line of text representing a backpack.
 ;;;

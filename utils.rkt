@@ -1,6 +1,7 @@
 #lang racket
 
-(require racket/stxparam)
+(require racket/stxparam
+         racket/unsafe/ops)
 
 (provide define/ec
          lambda/ec
@@ -26,3 +27,13 @@
      (define fname (lambda/ec (args ...) body ...))]
     [(define/ec name (fname args ...) body ...)
      (define fname (lambda/ec name (args ...) body ...))]))
+
+(define (groups-of lst n)
+  (define (groups-of* lst n)
+    (if (empty? lst)
+        lst
+        (cons (take lst n) (groups-of* (drop lst n) n))))
+  (if (zero? (modulo (length lst) n))
+      (groups-of* lst n)
+      #f))
+
