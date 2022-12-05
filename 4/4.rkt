@@ -1,40 +1,39 @@
 #lang racket
 
+(require "../utils.rkt")
+
 (module+ test
   (require rackunit))
-
-(define all andmap)
 
 ;;; Read assignments from a line
 ;;;
 ;;; Returns two values, left line and right line
-(define (parse-assignments line)
-  (let/ec return
-    ;; '("1-2" "3-5" "4-5" ...)
-    (define spreads (string-split line ","))
+(define/ec (parse-assignments line)
+  ;; '("1-2" "3-5" "4-5" ...)
+  (define spreads (string-split line ","))
 
-    ;;  '("1-2" "3-5")
-    (unless (= (length spreads) 2)
-      (return (values #f #f)))
+  ;;  '("1-2" "3-5")
+  (unless (= (length spreads) 2)
+    (return (values #f #f)))
 
-    ;; '((1 2) (3 5))
-    (define ranges (map (λ (x) (string-split x "-")) spreads))
+  ;; '((1 2) (3 5))
+  (define ranges (map (λ (x) (string-split x "-")) spreads))
 
-    ;; Validate all length 2.
-    (unless (all (λ (x) (= (length x) 2))
-                 ranges)
-      (return (values #f #f)))
+  ;; Validate all length 2.
+  (unless (andmap (λ (x) (= (length x) 2))
+                  ranges)
+    (return (values #f #f)))
 
-    ;; '((set 1 2) (set 3 4 5))
-    (define sets
-      (map (λ (rng) (let ([first (string->number (car rng))]
-                          [last (string->number (cadr rng))])
-                      (for/set ([s (in-inclusive-range first last)])
-                        s)))
-           ranges))
+  ;; '((set 1 2) (set 3 4 5))
+  (define sets
+    (map (λ (rng) (let ([first (string->number (car rng))]
+                        [last (string->number (cadr rng))])
+                    (for/set ([s (in-inclusive-range first last)])
+                      s)))
+         ranges))
 
-    (values (car sets)
-            (cadr sets))))
+  (values (car sets)
+          (cadr sets)))
 
 (module+ test
   (test-case "parse-assignments"
