@@ -7,6 +7,7 @@
          lambda/ec
          return
          index-list
+         sliding-window
          groups-of)
 
 (module+ test

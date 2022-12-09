@@ -44,9 +44,9 @@
 
 (module+ test
   (test-case "read-all-elfs"
-    (check-equal? '(3 2 3) (read-all-elfs '("1" "2" "" "" "2" "" "3")))
+    (check-equal? '((3 . 0) (3 . 2) (2 . 1)) (read-all-elfs '("1" "2" "" "" "2" "" "3")))
     (check-equal? '() (read-all-elfs '()))
-    (check-equal? '(1) (read-all-elfs '("" "" "1" "" "")))))
+    (check-equal? '((1 . 0)) (read-all-elfs '("" "" "1" "" "")))))
 
 (module+ main
   (define lines (map string-trim (sequence->list (in-lines))))
