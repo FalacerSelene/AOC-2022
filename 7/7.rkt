@@ -1,7 +1,5 @@
 #lang racket
 
-(require "../utils.rkt")
-
 (module+ test
   (require rackunit)
 
