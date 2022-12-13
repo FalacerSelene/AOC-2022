@@ -9,10 +9,15 @@
          index-list
          sliding-window
          groups-of
-         reflect-rectangular-matrix)
+         reflect-rectangular-matrix
+         inc!
+         dec!)
 
 (module+ test
   (require rackunit))
+
+(define-syntax-rule (inc! x) (set! x (add1 x)))
+(define-syntax-rule (dec! x) (set! x (sub1 x)))
 
 (define-syntax-parameter return (syntax-rules ()))
 

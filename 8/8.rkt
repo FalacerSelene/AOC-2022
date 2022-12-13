@@ -90,7 +90,6 @@
   ;; Just do it imperative
   (define (get-at x y) (~> grid (list-ref y) (list-ref x)))
   (define this-height (get-at xref yref))
-  (define-syntax-rule (inc! x) (set! x (+ x 1)))
   (define left 0)
   (for ([x (in-range (sub1 xref) -1 -1)])
     (define that-height (get-at x yref))
