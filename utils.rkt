@@ -8,7 +8,8 @@
          return
          index-list
          sliding-window
-         groups-of)
+         groups-of
+         reflect-rectangular-matrix)
 
 (module+ test
   (require rackunit))
@@ -66,3 +67,25 @@
   (for/list ([(e idx) (in-indexed l)])
     (cons e idx)))
 
+;;; Reflect a rectangular matrix, where neither dimension is 0.
+(define (reflect-nonzero-rectangular-matrix mtx)
+  (define mtx-elem-len (length (car mtx)))
+  (for/list ([l (in-range mtx-elem-len)])
+    (map (λ (mtx-row) (list-ref mtx-row l)) mtx)))
+
+(define (reflect-rectangular-matrix mtx)
+  (if (or (empty? mtx) (ormap empty? mtx))
+      '()
+      (reflect-nonzero-rectangular-matrix mtx)))
+
+(module+ test
+  (test-case "reflect-rectangular-matrix"
+    (check-equal? (reflect-rectangular-matrix '()) '())
+    (check-equal? (reflect-rectangular-matrix '(())) '())
+    (check-equal? (reflect-rectangular-matrix '(() () ())) '())
+    (check-equal? (reflect-rectangular-matrix '((1 2) (3 4)))
+                  '((1 3) (2 4)))
+    (check-equal? (reflect-rectangular-matrix '((1) (2) (3) (4)))
+                  '((1 2 3 4)))
+    (check-equal? (reflect-rectangular-matrix '((1 2 3 4)))
+                  '((1) (2) (3) (4)))))

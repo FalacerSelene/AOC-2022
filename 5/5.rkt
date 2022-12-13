@@ -1,6 +1,7 @@
 #lang racket
 
-(require threading)
+(require threading
+         "../utils.rkt")
 
 (module+ test
   (require rackunit))
@@ -39,29 +40,6 @@
     (check-equal? (pad-right '(#f #f) #t 3) '(#f #f #t))
     (check-equal? (pad-right '(#f #f #f #f) #t 3) '(#f #f #f #f))))
 
-;;; Reflect a rectangular matrix, where neither dimension is 0.
-(define (reflect-nonzero-rectangular-matrix mtx)
-  (define mtx-elem-len (length (car mtx)))
-  (for/list ([l (in-range mtx-elem-len)])
-    (map (λ (mtx-row) (list-ref mtx-row l)) mtx)))
-
-(define (reflect-rectangular-matrix mtx)
-  (if (or (empty? mtx) (ormap empty? mtx))
-      '()
-      (reflect-nonzero-rectangular-matrix mtx)))
-
-(module+ test
-  (test-case "reflect-rectangular-matrix"
-    (check-equal? (reflect-rectangular-matrix '()) '())
-    (check-equal? (reflect-rectangular-matrix '(())) '())
-    (check-equal? (reflect-rectangular-matrix '(() () ())) '())
-    (check-equal? (reflect-rectangular-matrix '((1 2) (3 4)))
-                  '((1 3) (2 4)))
-    (check-equal? (reflect-rectangular-matrix '((1) (2) (3) (4)))
-                  '((1 2 3 4)))
-    (check-equal? (reflect-rectangular-matrix '((1 2 3 4)))
-                  '((1) (2) (3) (4)))))
-
 ;;; Read multiple spec lines, and return the list of starting towers. The
 ;;; first element in each list is the head of the tower - there ought to be no
 ;;; #f in each tower, unless the spec is wrong and contains buried #f.
@@ -70,7 +48,7 @@
   ;; The levels are going to need to all be the same length, so find the max.
   (define max-length (foldl (λ (elem acc) (max acc (length elem))) 0 level-lines))
   (define norm-level-lines (map (λ (l) (pad-right l #f max-length)) level-lines))
-  (define tower-mtx (reflect-nonzero-rectangular-matrix norm-level-lines))
+  (define tower-mtx (reflect-rectangular-matrix norm-level-lines))
   (map (λ (l) (dropf l false?)) tower-mtx))
 
 (module+ test
