@@ -50,24 +50,40 @@
       (check-equal? head '(2 . 3))
       (check-equal? tail '(2 . 2)))))
 
-(define (head-move-origin-list move-list)
+(define (head-move-origin-set move-list)
   (let @ ([moves move-list]
           [head-pos (cons 0 0)]
           [tail-pos (cons 0 0)]
-          [tail-list '()])
+          [tail-set (set)])
     (if (empty? moves)
-        (reverse tail-list)
+        tail-set
         (let-values ([(new-head new-tail)
                       (head-move (car moves) head-pos tail-pos)])
-          (@ (cdr moves) new-head new-tail (cons tail-pos tail-list))))))
+          (displayln (format "~a :: ~a" new-head new-tail))
+          (@ (cdr moves) new-head new-tail (set-add tail-set tail-pos))))))
+
+(define (line-to-move line)
+  (define direction
+    (case (string-ref line 0)
+      [(#\L) 'left]
+      [(#\R) 'right]
+      [(#\U) 'up]
+      [(#\D) 'down]))
+  (define cnt (string->number (substring line 2)))
+  (make-list cnt direction))
 
 (define (move-list lines)
   (let @ ([lines lines]
           [move-list '()])
-    (if (empty? list)
-      (reverse move-list)
-      ())
-    ))
+    (if (empty? lines)
+        (reverse move-list)
+        (let ([next-move (line-to-move (car lines))])
+          (@ (cdr lines) (append next-move move-list))))))
 
 (define (lines-to-tail-pos-count lines)
-  )
+  (~> lines move-list head-move-origin-set set-count))
+
+(module+ main
+  (define input (sequence->list (in-lines)))
+  (define pos-count (lines-to-tail-pos-count input))
+  (displayln (format "Part One: ~a" pos-count)))
